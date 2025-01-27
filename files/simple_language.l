@@ -14,6 +14,7 @@
 "/"                     { return '/'; }
 "="                     { return '='; }
 ":"                     { return ':'; }
+";"                     { return SEMI; }
 [ \t]                   ;  // skip whitespace
 .|\n                    ; /* ignore all the rest */
 

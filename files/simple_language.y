@@ -9,6 +9,7 @@ int yylex();
 
 %union { int num; std::string *str; }
 
+%token SEMI
 %token<num> NUMBER
 %token<str> ID
 %type<num> expression
@@ -27,8 +28,8 @@ statement_list: statement
     | statement_list statement
     ;
 
-statement: assignment
-    | expression ':'          { std::cout << $1 << std::endl; }
+statement: assignment SEMI
+    | expression ':'          { std::cout << "Variable asignada con valor: " << $1 << std::endl; }
     ;
 
 assignment: ID '=' expression
