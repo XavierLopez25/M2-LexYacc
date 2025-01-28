@@ -3,7 +3,12 @@
 #include <string>
 #include <map>
 static std::map<std::string, int> vars;
-inline void yyerror(const char *str) { std::cout << "Parser error: " << str << std::endl; }
+inline void yyerror(const char *s) {
+    if (std::string(s) == "syntax error") {
+        return;
+    }
+    std::cout << "Parser error: " << s << std::endl;
+}
 int yylex();
 %}
 
@@ -28,28 +33,28 @@ statement_list: statement
     | statement_list statement
     ;
 
-statement: assignment SEMI
-    | expression ':'          { std::cout << "Variable asignada con valor: " << $1 << std::endl; }
-    | error
+statement:
+      assignment SEMI
+    | expression ':' { /* ... */ }
+
+    | error SEMI
       {
         yyerror("Error sintáctico en statement.");
-        yyclearin; // descartar el token que causo el error.
-        yyerrok;
+        yyerrok;      
       }
     ;
-    ;
+
 
 assignment: ID '=' expression
-    { 
-        printf("Assign %s = %d\n", $1->c_str(), $3); 
-        $$ = vars[*$1] = $3; 
+    {   
+        $$ = vars[*$1] = $3;
+        printf("Assign %s = %d\n", $1->c_str(), $3);  
         delete $1;
     }
     ;
 
 expression: NUMBER                  { $$ = $1; }
     | ID                            {
-        // Si la variable no existe, asume 0 o lanza error
         if (vars.find(*$1) == vars.end()) {
             std::cerr << "Warning: variable '" << *$1 << "' no inicializada. Valor = 0" << std::endl;
             $$ = 0;
