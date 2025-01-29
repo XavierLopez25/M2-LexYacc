@@ -17,10 +17,11 @@
 ":"                     { return ':'; }
 ";"                     { return SEMI; }
 [ \t]+                  ;    // ignora espacios
-[\n\r]+                 ;    // ignora saltos de línea
-.                       {
+(\r\n|\n|\r)+                 ;    // ignora saltos de línea
+. {
     fprintf(stderr, "Error: Token inválido '%s'\n", yytext);
 }
+
 
 %%
 
